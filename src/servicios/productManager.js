@@ -1,43 +1,63 @@
+// const fs = require('fs');
+import fs from 'fs'
+
 class productManager{
     constructor(){
         this.product = []
         this.id = 0
+        this.path = './files'
+        this.fileName = this.path + '/jsonProductos.json'
     }
 
-    addProduct({title, description, price, thumbnail, code, stock}){
-        const product ={title, description, price, thumbnail, code, stock, id: this.id++};
-        /* console.log("esto es product", product); */
-        const buscar = this.product.find(prod => prod.code === code);
-        console.log("esto es buscar", buscar)
-        if (buscar) {
-            console.log("El elemento ya existe en el array")
-        } else {
-            this.product.push(product);
-            
+    addProduct = async(title, description, price, thumbnail, code, stock) =>{
+        //crea la carpeta file
+        await fs.promises.mkdir(this.path, {recursive: true})
+        //agrego un producto
+        if(!(title, description, price, thumbnail, code, stock)){
+            console.log("Falta informacion")
         }
-        console.log("esto es el array", this.product)
-    }
-    getProduct(){
-        return this.product
-    }
-    getProductById(id){
-        const busquedaId = this.product.find(prod => prod.id === id)
-        console.log(busquedaId)
-        if (busquedaId) {
-            console.log(busquedaId)
-        } else {
-        console.log("Not Found")
+        else if (this.product.find((prod) => prod.code === code)) {
+            console.log("El codigo del producto ya existe")
+        }else{
+            const prodAdd = {title, description, price, thumbnail, code, stock,  id: this.id++}
+            this.product.push (prodAdd)
+            console.log("Agrego Producto")
         }
+        await fs.promises.writeFile(this.fileName,JSON.stringify(this.product))
+        
+    }   
 
+    
+    getProduct = async () =>{
+        let InfoJson = await fs.promises.readFile(this.fileName, 'utf-8')
+        console.log(InfoJson)
+        let InfoParse = await JSON.parse(InfoJson)
+
+        return InfoParse
         
     }
+    getProductById= async(id) =>{
+        let InfoJson = await fs.promises.readFile(this.fileName, 'utf-8')
+        let InfoParse = await JSON.parse(InfoJson)
 
+        const busquedaId = InfoParse.find(prod=> prod.id === id)
+        console.log(busquedaId)
+        return busquedaId ?? 'No se encontro el producto'
+    }
+
+    deleteProduct = async(id) =>{
+        let InfoJson = await fs.promises.readFile(this.fileName, 'utf-8')
+        let InfoParse = await JSON.parse(InfoJson)
+        const busquedaId = InfoParse.filter(prod=> prod.id !== id)
+        await fs.promises.writeFile(this.fileName, JSON.stringify(busquedaId))
+        
+
+    } 
 }
 const product = new productManager()
-product.addProduct({title:"teclado", description:"xd", price: 4000, thumbnail: 'thumbnail', code: 69, stock: 55})
-product.addProduct({title:"teclado", description:"xd", price: 4000, thumbnail: 'thumbnail', code: 79, stock: 55})
-product.addProduct({title:"teclado", description:"xd", price: 4000, thumbnail: 'thumbnail', code: 89, stock: 55})
-product.getProduct()
-product.getProductById(2) 
+// product.getProductById(0)
+product.deleteProduct(0)
+// product.getProduct()
+product.addProduct("mouse","xd", "4000", 'thumbnail',  "10",  "55");
 export default productManager
 
