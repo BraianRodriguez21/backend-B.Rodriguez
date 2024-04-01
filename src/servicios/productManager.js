@@ -56,8 +56,7 @@ class productManager{
 }
 const product = new productManager()
 // product.getProductById(0)
-product.deleteProduct(0)
+// product.deleteProduct(0)
 // product.getProduct()
-product.addProduct("mouse","xd", "4000", 'thumbnail',  "10",  "55");
+product.addProduct("mouse","xd", "4000", 'thumbnail',  "18",  "55");
 export default productManager
-
