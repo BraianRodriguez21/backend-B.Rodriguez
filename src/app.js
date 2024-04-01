@@ -4,7 +4,7 @@ import productManager from "./servicios/productManager";
 const app = express();
 const port = 3000;
 
-const products = productManager
+const products =  new productManager
 
 app.get('/products', (req, res) => {
     const { code } = req.query;
