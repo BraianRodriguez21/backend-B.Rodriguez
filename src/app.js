@@ -1,30 +1,41 @@
 import express from "express";
-import productManager from "./servicios/productManager";
+import productManager from "./servicios/ProductManagerroductManager";
 
 const app = express();
 const port = 3000;
+const productManager = new ProductManager();
 
-const products =  new productManager
+app.use(express.json());
 
-app.get('/products', (req, res) => {
-    const { code } = req.query;
+app.get('/products', async (req, res) => {
     let { limit } = req.query;
-
-    if (!code || (code !== '18' && code !== '19')) {
-        return res.send("Código de producto no válido");
-    }
-
     limit = parseInt(limit);
-    if (isNaN(limit) || limit <= 0) {
-        return res.send("El límite debe ser un número válido mayor que cero");
+
+    if (isNaN(limit) || limit < 0) {
+        limit = undefined;
     }
 
-    const filteredProducts = products.filter(product => product.code === code);
+    try {
+        const products = await productManager.getProduct(); // Asumiendo que esto devuelve todos los productos
+        const limitedProducts = limit ? products.slice(0, limit) : products;
+        return res.json(limitedProducts);
+    } catch (error) {
+        return res.status(500).send("Error al recuperar los productos");
+    }
+});
 
-
-    const result = limit ? filteredProducts.slice(0, limit) : filteredProducts;
-
-    return res.json(result);
+app.get('/product/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const product = await productManager.getProductById(parseInt(id));
+        if (product) {
+            res.json(product);
+        } else {
+            res.status().send("Producto no encontrado");
+        }
+    } catch (error) {
+        res.status().send("Error al buscar el producto");
+    }
 });
 
 app.listen(port, () => {
