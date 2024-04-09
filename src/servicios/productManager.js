@@ -1,9 +1,10 @@
 import fs from 'fs';
+import { v4 as uuidv4 } from 'uuid'; 
 
 class ProductManager {
     constructor() {
         this.path = './files';
-        this.fileName = `${this.path}/jsonProductos.json`;
+        this.fileName = `${this.path}/products.json`; 
     }
 
     async init() {
@@ -17,7 +18,7 @@ class ProductManager {
 
     async addProduct(title, description, price, thumbnail, code, stock) {
         await this.init();
-        const products = await this.getProduct();
+        const products = await this.getProducts(); 
 
         if (!title || !description || !price || !thumbnail || !code || !stock) {
             throw new Error("Falta información");
@@ -28,21 +29,21 @@ class ProductManager {
         }
 
         const newProduct = {
+            id: uuidv4(), 
             title,
             description,
             price: Number(price),
             thumbnail,
             code,
             stock: Number(stock),
-            id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1
         };
 
         products.push(newProduct);
-        await fs.promises.writeFile(this.fileName, JSON.stringify(products));
+        await fs.promises.writeFile(this.fileName, JSON.stringify(products, null, 2)); 
         return newProduct;
     }
 
-    async getProduct() {
+    async getProducts() { 
         try {
             const infoJson = await fs.promises.readFile(this.fileName, 'utf-8');
             return JSON.parse(infoJson);
@@ -52,15 +53,15 @@ class ProductManager {
     }
 
     async getProductById(id) {
-        const products = await this.getProduct();
+        const products = await this.getProducts(); 
         const product = products.find(prod => prod.id === id);
         return product ?? null; 
     }
 
     async deleteProduct(id) {
-        const products = await this.getProduct();
+        const products = await this.getProducts(); 
         const filteredProducts = products.filter(prod => prod.id !== id);
-        await fs.promises.writeFile(this.fileName, JSON.stringify(filteredProducts));
+        await fs.promises.writeFile(this.fileName, JSON.stringify(filteredProducts, null, 2)); 
         return { deleted: id };
     }
 }

@@ -1,5 +1,6 @@
 import express from "express";
-import productManager from "./servicios/ProductManagerroductManager";
+import ProductManager from "./servicios/ProductManager"; 
+import { v4 as uuidv4 } from 'uuid'; 
 
 const app = express();
 const port = 3000;
@@ -16,7 +17,7 @@ app.get('/products', async (req, res) => {
     }
 
     try {
-        const products = await productManager.getProduct(); // Asumiendo que esto devuelve todos los productos
+        const products = await productManager.getProducts(); 
         const limitedProducts = limit ? products.slice(0, limit) : products;
         return res.json(limitedProducts);
     } catch (error) {
@@ -24,17 +25,18 @@ app.get('/products', async (req, res) => {
     }
 });
 
-app.get('/product/:id', async (req, res) => {
+
+app.get('/products/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        const product = await productManager.getProductById(parseInt(id));
+        const product = await productManager.getProductById(id); 
         if (product) {
             res.json(product);
         } else {
-            res.status().send("Producto no encontrado");
+            res.status(404).send("Producto no encontrado");
         }
     } catch (error) {
-        res.status().send("Error al buscar el producto");
+        res.status(500).send("Error al buscar el producto");
     }
 });
 
