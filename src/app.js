@@ -1,45 +1,41 @@
-import express from "express";
-import ProductManager from "./servicios/ProductManager"; 
-import { v4 as uuidv4 } from 'uuid'; 
+import express from 'express';
+import http from 'http';
+import path from 'path';
+import { Server } from 'socket.io';
+import productRouter from './routes/productRouter.js';
+import handlebars from 'express-handlebars';
+import { __dirname } from './util.js';
+import { uploader } from './multer.js';
 
 const app = express();
-const port = 3000;
-const productManager = new ProductManager();
+const server = http.createServer(app);
+const Socketio = new Server(server);
+
+
+app.engine('handlebars', handlebars.engine())
+app.set('views', __dirname+'/views')
+app.set('view engine', 'handlebars')
+
+app.use(express.static(path.join(process.cwd(), 'public')));
+
 
 app.use(express.json());
 
-app.get('/products', async (req, res) => {
-    let { limit } = req.query;
-    limit = parseInt(limit);
 
-    if (isNaN(limit) || limit < 0) {
-        limit = undefined;
-    }
+app.use('/api/products', productRouter);
 
-    try {
-        const products = await productManager.getProducts(); 
-        const limitedProducts = limit ? products.slice(0, limit) : products;
-        return res.json(limitedProducts);
-    } catch (error) {
-        return res.status(500).send("Error al recuperar los productos");
-    }
+app.get('/', (req, res) => {
+res.render('home');
 });
 
 
-app.get('/products/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        const product = await productManager.getProductById(id); 
-        if (product) {
-            res.json(product);
-        } else {
-            res.status(404).send("Producto no encontrado");
-        }
-    } catch (error) {
-        res.status(500).send("Error al buscar el producto");
-    }
+Socketio.on('connection', (socket) => {
+    console.log('Un cliente se ha conectado');
 });
 
-app.listen(port, () => {
-    console.log(`La aplicación está escuchando en el puerto ${port}`);
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
 });
+
+export { Socketio };
