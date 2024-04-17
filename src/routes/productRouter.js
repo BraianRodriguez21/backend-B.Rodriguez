@@ -1,10 +1,17 @@
-import { Router } from 'express'
+import express from 'express';
 
-const router = Router()
+const router = express.Router();
 
-// definiendo los distos métodos de crud de productos
+const products = [
+    { id: '1', title: 'Producto 1', price: '100' },
+    { id: '2', title: 'Producto 2', price: '101' },
+    { id: '3', title: 'Producto 3', price: '102' },
+    { id: '4', title: 'Producto 4', price: '103' },
+    { id: '5', title: 'Producto 5', price: '104' }
+];
+
 router.get('/', (req, res) => {
-    res.send('get de productos')
-})
+    res.render('home', { products });
+});
 
-export default router
+export default router;

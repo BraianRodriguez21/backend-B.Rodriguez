@@ -6,13 +6,18 @@
 </head>
 <body>
     <h1>Listado de Productos</h1>
-    {{#each products}}
-    <div>
-    <p>Nombre del Proucto{{this.title}}</p>
-    <p>Precio{{this.price}}</p>
-    </div>
-    {{/each}}
+    <ul>
+        {{#each products}}
+            <li>{{this.title}} - Precio: ${{this.price}}</li>
+        {{/each}}
+    </ul>
 
-<script src="/src/public/js/home.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('productoNuevo', (producto) => {
+        });
+    </script>
 </body>
 </html>
