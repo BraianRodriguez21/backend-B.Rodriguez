@@ -1,7 +1,7 @@
 import express from 'express';
-import { router as viewRouter } from './routes/viewrouter.js';
+import { viewRouter } from './routes/viewrouter.js';
 import { handlebarsConf } from './config/handlebarsConfig.js';
-import { router } from './routes/productRouter.js';
+import { productRouter } from './routes/productRouter.js';
 import { socketConf } from './config/socketConfig.js';
 
 const app = express();
@@ -21,6 +21,6 @@ app.use((req, res, next) => {
 });
 
 app.use('/', viewRouter);
-app.use('/api/products', router);
+app.use('/api/products', productRouter);
 
 export { app };

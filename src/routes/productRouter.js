@@ -1,22 +1,29 @@
-import express from 'express';
+import { Router } from 'express';
 import { ProductManager } from '../servicios/productManager.js';
+import { Product } from '../servicios/product.js';
 
-const router = express.Router();
+export const productRouter = Router();
+
 const productManager = new ProductManager();
 
-router.get('/', (req, res) => {
-    const products = productManager.getProducts();
-    res.json(products);
-});
+productRouter.post('/', (req, res) => {
+    try {
+        const product = new Product(req.body);
 
-router.post('/', (req, res) => {
-    const { title, price } = req.body;
-    if (!title || !price) {
-        return res.status(400).json({ error: 'Se requieren título y precio para agregar un producto' });
+        productManager.add(product);
+
+        req.io.emit('new-product', product);
+
+        res.json({ success: true, payload: product, message: 'Producto agregado' });
+    } catch (error) {
+        res.status(404).json({ success: false, payload: null, message: 'No se pudo agregar el producto' });
     }
-    const newProduct = { title, price };
-    productManager.add(newProduct);
-    res.status(201).json({ message: 'Producto agregado correctamente', product: newProduct });
 });
-
-export { router };
+productRouter.get('/', (req, res) => {
+    try {
+        const products = productManager.getProducts();
+        res.json({ success: true, payload: products, message: 'Productos obtenidos' });
+    } catch (error) {
+        res.json({ success: false, payload: null, message: 'No se pudo obtener los productos' });
+    }
+});
