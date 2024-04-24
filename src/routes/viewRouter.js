@@ -16,4 +16,4 @@ router.get('/', (req, res) => {
     });
 });
 
-export { router }; // Exportar el enrutador
+export { router }; 

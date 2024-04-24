@@ -1,5 +1,5 @@
 import express from 'express';
-import { ProductManager } from '../servicios/ProductManager.js';
+import { ProductManager } from '../servicios/productManager.js';
 
 const router = express.Router();
 const productManager = new ProductManager();
@@ -20,4 +20,3 @@ router.post('/', (req, res) => {
 });
 
 export { router };
-

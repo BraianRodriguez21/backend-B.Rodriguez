@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export class ProductManager {
-    #products; 
+    #products;
 
     constructor() {
         this.#products = [
@@ -14,8 +14,8 @@ export class ProductManager {
     }
 
     add(product) {
-        const productWithId = { 
-            id: uuidv4(), 
+        const productWithId = {
+            id: uuidv4(),
             ...product 
         };
         this.#products.push(productWithId); 

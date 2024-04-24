@@ -15,5 +15,6 @@ export const handlebarsConf = (app) => {
     });
 
     app.engine('hbs', hbs.engine);
+    app.set('view, src/view')
     app.set('view engine', 'hbs'); 
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import { router as viewsRouter } from './routes/viewrouter.js';
+import { router as viewRouter } from './routes/viewrouter.js';
 import { handlebarsConf } from './config/handlebarsConfig.js';
 import { router } from './routes/productRouter.js';
 import { socketConf } from './config/socketConfig.js';
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/', viewsRouter);
+app.use('/', viewRouter);
 app.use('/api/products', router);
 
 export { app };
