@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-const httpServer = app.listen(8080, () => console.log('Servidor ON: Puerto 8080'));
+const httpServer = app.listen(8080, () => console.log('Servidor en el puerto 8080'));
 
 handlebarsConf(app);
 
