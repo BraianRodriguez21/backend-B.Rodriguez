@@ -1,35 +1,26 @@
 import express from 'express';
-import http from 'http';
-import path from 'path';
-import handlebars from 'express-handlebars';
-import { Server } from 'socket.io';
-import { __dirname } from './utils.js';
-import productRouter from './routes/productRouter.js';
+import { router as viewsRouter } from './routes/viewrouter.js';
+import { handlebarsConf } from './config/handlebarsConfig.js';
+import { router } from './routes/productRouter.js';
+import { socketConf } from './config/socketConfig.js';
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-
-app.engine('handlebars', handlebars());
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'handlebars');
-
-app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-app.use('/api/products', productRouter);
+const httpServer = app.listen(8080, () => console.log('Servidor ON: Puerto 8080'));
 
-io.on('connection', (socket) => {
-    console.log('Un cliente se ha conectado');
+handlebarsConf(app);
 
-    socket.on('nuevoProducto', (producto) => {
-        io.emit('productoNuevo', producto);
-    });
+const io = socketConf(httpServer);
 
+app.use((req, res, next) => {
+    req.io = io;
+    next();
 });
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-});
+app.use('/', viewsRouter);
+app.use('/api/products', router);
+
+export { app };

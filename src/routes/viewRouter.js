@@ -1,6 +1,5 @@
-import { Router } from 'express';
-
-const router = Router();
+import express from 'express';
+const router = express.Router();
 
 const products = [
     { id: '1', title: 'producto 1', price: '100' },
@@ -10,13 +9,11 @@ const products = [
     { id: '5', title: 'producto 5', price: '104' }
 ];
 
-// Endpoint en la ruta raíz
 router.get('/', (req, res) => {
     res.render('home', {
-        title: 'mercadito || Fede',
+        title: 'Ecommerce || Braian',
         products,
-        // styles: 'homeStyles.css'
     });
 });
 
-export default router;
+export { router }; // Exportar el enrutador
