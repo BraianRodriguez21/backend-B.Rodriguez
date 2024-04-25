@@ -1,5 +1,5 @@
 import express from 'express';
-import { viewRouter } from './routes/viewrouter.js';
+import { viewRouter } from './routes/viewRouter.js';
 import { handlebarsConf } from './config/handlebarsConfig.js';
 import { productRouter } from './routes/productRouter.js';
 import { socketConf } from './config/socketConfig.js';

@@ -26,7 +26,7 @@ export const viewRouter = Router();
 
 viewRouter.get('/', async (req, res) => {
 	
-	const response = await fetch('http://localhost:8080/api/books');
+	const response = await fetch('http://localhost:8080/api/products');
 
 	const data = await response.json();
 
