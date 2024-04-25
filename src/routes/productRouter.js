@@ -29,9 +29,9 @@ productRouter.get('/', (req, res) => {
 productRouter.get('/realtimeproducts', (req, res) => {
     try {
         const products = productManager.getProducts();
-        res.render('realtimeproducts', { products });
+        res.json('realtimeproducts', { products });
     } catch (error) {
-        res.status(500).json({ success: false, payload: null, message: 'Error al renderizar la vista de productos en tiempo real' });
+        res.status(500).json({ success: false, payload: null, message: 'Error al cargar nuevos productos' });
     }
 });
 
