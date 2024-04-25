@@ -26,14 +26,15 @@ productRouter.get('/', (req, res) => {
         res.json({ success: false, payload: null, message: 'No se pudo obtener los productos' });
     }
 });
-productRouter.get('/realtimeproducts', (req, res) => {
-    try {
-        const products = productManager.getProducts();
-        res.json('realtimeproducts', { products });
-    } catch (error) {
-        res.status(500).json({ success: false, payload: null, message: 'Error al cargar nuevos productos' });
-    }
-});
+//  productRouter.get('/realtimeproducts', (req, res) => {
+//      try {
+//          const products = productManager.getProducts();
+//          res.render('realtimeproducts', { products });
+//      } catch (error) {
+//          res.status(500).json({ success: false, payload: null, message: 'Error al cargar productos' });
+//      }
+//  });
 
+// export default productManager
 
 
