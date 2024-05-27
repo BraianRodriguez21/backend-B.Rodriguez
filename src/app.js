@@ -28,7 +28,9 @@ app.use((req, res, next) => {
     next();
 });
 
-mongoose.connect('mongodb+srv://braianrodriguez:ReinosXan21@ecommercegaming.dyihcoy.mongodb.net/Ecommerce?retryWrites=true&w=majority&appName=EcommerceGaming', {
+//mongoose.connect('mongodb+srv://braianrodriguez:ReinosXan21@ecommercegaming.dyihcoy.mongodb.net/Ecommerce?retryWrites=true&w=majority&appName=EcommerceGaming', {
+mongoose.connect('mongodb://localhost:27017', {
+
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => console.log('Mongo connected'))
