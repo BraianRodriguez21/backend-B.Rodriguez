@@ -1,15 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Products</title>
+    <title>Productos</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-    <h1>Productos en Tiempo Real</h1>
-    <div id="products-container">
+    {{#if user}}
+        <p>Bienvenido, {{user.email}}. Rol: {{user.role}}</p>
+        <a href="/api/users/logout">Cerrar sesión</a>
+    {{else}}
+        <p>No estás logueado. <a href="/login">Iniciar sesión</a></p>
+    {{/if}}
+    <h1>Productos</h1>
+    <form id="productForm">
+        <input type="text" name="title" placeholder="Título" required>
+        <input type="number" name="price" placeholder="Precio" required>
+        <input type="text" name="description" placeholder="Descripción" required>
+        <button type="submit">Agregar Producto</button>
+    </form>
+    <div class="card-container">
         {{#each products}}
-        <div class="product">
+        <div class="card">
             <h3>{{this.title}}</h3>
             <p>Precio: {{this.price}}</p>
             <p>Descripción: {{this.description}}</p>
@@ -17,6 +30,6 @@
         {{/each}}
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/realtimeproducts.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 </html>

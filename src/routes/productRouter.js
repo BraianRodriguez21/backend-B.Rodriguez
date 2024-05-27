@@ -1,40 +1,46 @@
-import { Router } from 'express';
-import { ProductManager } from '../servicios/productManager.js';
-import { Product } from '../servicios/product.js';
+import express from 'express';
+import Product from '../models/productModel.js';
 
-export const productRouter = Router();
+const router = express.Router();
 
-const productManager = new ProductManager();
-
-productRouter.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const product = new Product(req.body);
-
-        productManager.add(product);
-
-        req.io.emit('new-product', product);
-        res.json({ success: true, payload: product, message: 'Producto agregado' });
+        const savedProduct = await product.save();
+        req.io.emit('new-product', savedProduct);
+        res.status(201).json({ success: true, payload: savedProduct, message: 'Producto agregado' });
     } catch (error) {
-        res.status(404).json({ success: false, payload: null, message: 'No se pudo agregar el producto' });
+        res.status(500).json({ success: false, message: 'No se pudo agregar el producto' });
     }
 });
-productRouter.get('/', (req, res) => {
+
+router.get('/', async (req, res) => {
     try {
-        const products = productManager.getProducts();
-        res.json({ success: true, payload: products, message: 'Productos obtenidos' });
+        const { limit = 10, page = 1, sort, query } = req.query;
+        const options = {
+            limit: parseInt(limit),
+            page: parseInt(page),
+            sort: sort ? { price: sort === 'asc' ? 1 : -1 } : {},
+        };
+
+        const filter = query ? { $or: [{ category: query }, { availability: query }] } : {};
+
+        const products = await Product.paginate(filter, options);
+        res.json({
+            status: 'success',
+            payload: products.docs,
+            totalPages: products.totalPages,
+            prevPage: products.prevPage,
+            nextPage: products.nextPage,
+            page: products.page,
+            hasPrevPage: products.hasPrevPage,
+            hasNextPage: products.hasNextPage,
+            prevLink: products.hasPrevPage ? `/api/products?limit=${limit}&page=${products.prevPage}&sort=${sort}&query=${query}` : null,
+            nextLink: products.hasNextPage ? `/api/products?limit=${limit}&page=${products.nextPage}&sort=${sort}&query=${query}` : null,
+        });
     } catch (error) {
-        res.json({ success: false, payload: null, message: 'No se pudo obtener los productos' });
+        res.status(500).json({ success: false, message: 'Error al obtener los productos' });
     }
 });
-//  productRouter.get('/realtimeproducts', (req, res) => {
-//      try {
-//          const products = productManager.getProducts();
-//          res.render('realtimeproducts', { products });
-//      } catch (error) {
-//          res.status(500).json({ success: false, payload: null, message: 'Error al cargar productos' });
-//      }
-//  });
 
-// export default productManager
-
-
+export const productRouter = router;
