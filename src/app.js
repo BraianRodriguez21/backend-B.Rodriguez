@@ -5,8 +5,6 @@ import { handlebarsConf } from './config/handlebarsConfig.js';
 import  productRouter  from './routes/productRouter.js';
 import { cartRouter } from './routes/cartRouter.js'; 
 import { socketConf } from './config/socketConfig.js';
-import { sessionConfig } from './config/sessionConfig.js';
-import { passportConfig } from './config/passportConfig.js';
 import { authRouter } from './routes/authRouter.js';
 
 const app = express();
@@ -28,7 +26,6 @@ app.use((req, res, next) => {
     next();
 });
 
-//mongoose.connect('mongodb+srv://braianrodriguez:ReinosXan21@ecommercegaming.dyihcoy.mongodb.net/Ecommerce?retryWrites=true&w=majority&appName=EcommerceGaming', {
 mongoose.connect('mongodb://localhost:27017', {
 
     useNewUrlParser: true,
